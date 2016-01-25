@@ -91,8 +91,6 @@ public class MySqrt {
         for(int i = 0;i<5;i++) {
             System.out.println("Indata: " + i*i + " svar: " + mySqrtLoop(i*i,EPS) + " Loop");
             System.out.println("Indata: " + i*i + " svar: " + mySqrtRecurse(i*i,EPS) + " Recursive");
-
-
         }
 
     }
