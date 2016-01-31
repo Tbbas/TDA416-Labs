@@ -9,6 +9,10 @@ public class MySqrt {
         double yMin = 0;
         double yMax = 0;
         double yMitt = 0;
+
+        if(x < 0) {
+            return Double.NaN;
+        }
         if(x==0) {
             return 0;
         }
@@ -47,6 +51,10 @@ public class MySqrt {
     public static double mySqrtRecurse(double x, double epsilon) {
         double yMin = 0;
         double yMax = 0;
+        if(x < 0) {
+            return Double.NaN;
+        }
+
         if(x==0) {
             return 0;
         }
@@ -87,11 +95,32 @@ public class MySqrt {
      * Loops over the numbers from 1 to five and calculates the square root of the number squared
      * @param args
      */
-    public static void main(String[] args) {
-        for(int i = 0;i<5;i++) {
-            System.out.println("Indata: " + i*i + " svar: " + mySqrtLoop(i*i,EPS) + " Loop");
-            System.out.println("Indata: " + i*i + " svar: " + mySqrtRecurse(i*i,EPS) + " Recursive");
+    public static void main(String[] args){
+        Double[] testArray = {-3.0,0.0,0.5,1.0,2.3,5.0,100.0,124567.0};
+        String[] trueAswerArray = {"NaN","0","0.707","1","1.5165","2.236","10","352.94"};
+        System.out.println("----------------Test------------------");
+        System.out.println("This will test the recursive and loop square root method");
+        System.out.println("with the following aray of numbers:");
+        System.out.println("[-3.0,0.0,0.5,1.0,2.3,5.0,100.0,124567.0]");
+        System.out.println("Test starting...");
+        System.out.println();
+        for(int i = 0; i<testArray.length;i++) {
+            System.out.println("----------------------------------");
+
+            System.out.println("Loop; Data = "
+                    + Double.toString(testArray[i]) + "; Result: "
+                    + mySqrtLoop(testArray[i],EPS) + "; Expected result: " + trueAswerArray[i]);
+
+            System.out.println("Recursive; Data = "
+                    + Double.toString(testArray[i]) + "; Result: "
+                    + mySqrtRecurse(testArray[i],EPS) + "; Expected result: " + trueAswerArray[i]);
+
+
         }
+
+        System.out.println("Test compleated");
+
+
 
     }
 
