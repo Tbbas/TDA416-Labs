@@ -36,7 +36,7 @@ public class DLList<E> {
    * @return    the node holding the added element
    */
   public Node addFirst(E e) {
-      first = e;
+      first = new Node(e);
   }
 
   /** inserts an element at then end of the list
@@ -44,7 +44,7 @@ public class DLList<E> {
    * @return    the node holding the added element
    */
   public Node addLast(E e) {
-      last = e;
+      last = new Node(e);
   }
   
   /**
@@ -80,7 +80,7 @@ public class DLList<E> {
   public Node insertBefore(E e, Node l) {
       Node temp = l.getPrev();
       temp.next = new Node(e);
-      temp.next.next = temp;
+      temp.next.next = l;
   }
 
   /** removes an element
