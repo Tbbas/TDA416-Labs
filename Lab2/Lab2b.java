@@ -1,6 +1,8 @@
 import java.awt.geom.Point2D;
+import java.util.PriorityQueue;
 
 public class Lab2b  {
+    private static PriorityQueue<ListElement> queue;
     /**
      * The simplyfyshape first calls for a generatelist method wich generates a linkedlist for the x and y coordinates
      * stored in poly, then removes the nodes with the lowest value untill there is only k nodes left.
@@ -9,6 +11,14 @@ public class Lab2b  {
      * @return
      */
   public static double[] simplifyShape(double[] poly, int k) {
+      DLList list = generateLinkedList(poly);
+      int removedNodes = 0;
+      while(removedNodes < poly.length*2 - k) {
+            //find node with least value
+
+      }
+      return null;
+
   }
 
     /**
