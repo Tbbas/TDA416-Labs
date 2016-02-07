@@ -1,4 +1,5 @@
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class Lab2b  {
@@ -14,12 +15,46 @@ public class Lab2b  {
       DLList list = generateLinkedList(poly);
       int removedNodes = 0;
       while(removedNodes < poly.length*2 - k) {
-            //find node with least value
-
+          ListElement elt = queue.peek();
+          DLList.Node node = findNodeByValue(list,elt);
+          ((ListElement)node.elt).setValue(calculateValue(node));
+          list.remove(node);
+          queue.remove(elt);
+          removedNodes++;
       }
-      return null;
+      ArrayList<Double> returnList = new ArrayList<Double>();
+      DLList.Node current = list.getFirst();
+      while(current != null) {
+        returnList.add(((ListElement)current.elt).getX());
+          returnList.add(((ListElement)current.elt).getY());
+
+
+          if(current.getNext() == null) break;
+          current = current.getNext();
+      }
+
+      double[] returnArray = new double[returnList.size()];
+      for(int i = 0; i<returnList.size();i++) {
+        returnArray[i] = returnList.get(i);
+      }
+      return returnArray;
+
 
   }
+
+    /**
+     * Returns the node corresponding to the specified Value
+     * @return
+     */
+    private static DLList.Node findNodeByValue(DLList list, ListElement elt) {
+        DLList.Node current = list.getFirst();
+        while(current.getNext() != null) {
+            if(((ListElement)current.elt).equals(elt)) {
+                return current;
+            }
+        }
+        return null;
+    }
 
     /**
      * Returns a DLList from a array of coordinates with data equal a array with the two first places being the x and y coordinate and the third place being the value.
@@ -27,7 +62,7 @@ public class Lab2b  {
      */
     private static  DLList generateLinkedList(double[] poly) {
       DLList list = new DLList<ListElement>();
-      for(i = 0; i<poly.length-2; i+=2){
+      for(int i = 0; i<poly.length-2; i+=2){
         ListElement element = new ListElement(poly[i], poly[i+1], 0.0);
         if(i == 0){
           list.addFirst(element);
@@ -40,10 +75,10 @@ public class Lab2b  {
     }
 
     private static void calculateWholeListValues(DLList list){
-        Node node = list.getFirst();
+        DLList.Node node = list.getFirst();
         while(node.next != null){
           if(node != list.getFirst() && node != list.getLast()){
-            node.value = calculateValue(node)
+              ((ListElement)node.elt).setValue(calculateValue(node));
           }
           node = node.next;
         }
