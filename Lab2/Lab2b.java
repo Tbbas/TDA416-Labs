@@ -9,50 +9,26 @@ public class Lab2b  {
      * @return
      */
   public static double[] simplifyShape(double[] poly, int k) {
-      int removedNodes = 0;
-      DLList<Double> nodeList = generateLinkedList(poly);
-
-      while (removedNodes < ((poly.length/2) - k)) {
-
-          
-      }
-      return poly;
   }
 
     /**
-     * Returns a DLList from a array of coordinates with data equal a double[] containing the x and y coordinate
+     * Returns a DLList from a array of coordinates with data equal a array with the two first places being the x and y coordinate and the third place being the value.
      * @param poly
      */
     private static  DLList generateLinkedList(double[] poly) {
-        DLList<Double[]> list = new DLList<Double[]>();
-        DLList.Node current = null;
-        Double[] currentCoordinates;
-
-        //Generate Points
-        for(int i = 0; i<poly.length;i+=2) {
-            currentCoordinates = new Double[]{poly[i],poly[i+1]};
-            if(list.getFirst() == null) {
-                list.addFirst(currentCoordinates);
-                current = list.getFirst();
-            } else {
-                current = list.insertAfter(currentCoordinates,current);
-
-            }
-        }
-
-
     }
 
 
     /**
-     * Returns the value for the Node
+     * Takes the left node L, the node itself P and the right nodes R coordinates and calculates
+     * the value.
      * @return
      */
-    private static Double calculateValue(DLList.Node n) {
+    private static Double calculateValue(Double[] L, Double[] P, Double[] R) {
         //l-p
-        Double LMP = getLength((Double[])n.prev.elt,(Double[])n.elt);
-        Double PMR = getLength((Double[])n.elt,(Double[])n.next.elt);
-        Double LMR = getLength((Double[])n.prev.elt,(Double[])n.next.elt);
+        Double LMP = getLength(L,P);
+        Double PMR = getLength(P,R);
+        Double LMR = getLength(L,R);
 
         return (LMP+PMR)-LMR;
 
