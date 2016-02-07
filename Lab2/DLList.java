@@ -23,20 +23,28 @@ public class DLList<E> {
       return this.prev;
     }
   }
-  
+
   /** first and last nodes in list, null when list is empty */
   Node first, last;
-  
+
   DLList() {
     first = last = null;
   }
-  
+
   /** inserts an element at the beginning of the list
    * @param e   the new element value
    * @return    the node holding the added element
    */
   public Node addFirst(E e) {
-      first = new Node(e);
+    Node node = new Node(e)
+    if(first != null){
+      first.prev = node;
+      node.next = first;
+    }
+    if(last == null){
+      last = node;
+    }
+    first = node;
   }
 
   /** inserts an element at then end of the list
@@ -44,23 +52,31 @@ public class DLList<E> {
    * @return    the node holding the added element
    */
   public Node addLast(E e) {
-      last = new Node(e);
+      Node node = new Node(e)
+      if(last != null){
+        last.next = node;
+        node.prev = last;
+      }
+      if(first == null){
+        first = node;
+      }
+      last = node;
   }
-  
+
   /**
    * @return    the node of the list's first element, null if list is empty
    */
   public Node getFirst() {
       return first;
   }
-  
+
   /**
    * @return    the node of the list's last element, null if list is empty
    */
   public Node getLast() {
       return last;
   }
-  
+
   /** inserts a new element after a specified node
     * @param e   the new element
     * @param l   the node after which to insert the element, must be non-null and a node belonging to this list
