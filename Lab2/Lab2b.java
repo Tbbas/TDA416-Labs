@@ -16,8 +16,28 @@ public class Lab2b  {
      * @param poly
      */
     private static  DLList generateLinkedList(double[] poly) {
+      DLList list = new DLList<ListElement>();
+      for(i = 0; i<poly.length-2; i+=2){
+        ListElement element = new ListElement(poly[i], poly[i+1], 0.0);
+        if(i == 0){
+          list.addFirst(element);
+        }else {
+          list.addLast(element);
+        }
+      }
+      calculateWholeListValues(list);
+      return list;
     }
 
+    private static void calculateWholeListValues(DLList list){
+        Node node = list.getFirst();
+        while(node.next != null){
+          if(node != list.getFirst() && node != list.getLast()){
+            node.value = calculateValue(node)
+          }
+          node = node.next;
+        }
+    }
 
     /**
      * Takes the left node L, the node itself P and the right nodes R coordinates and calculates
