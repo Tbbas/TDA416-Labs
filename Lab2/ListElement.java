@@ -1,4 +1,4 @@
-
+import java.awt.geom.Point2D;
 
 /**
  * This class is supposed to be used with Lab2 of the TDA416 course, contains a x and y coordinates for a point as well as the value for the point.
@@ -29,6 +29,14 @@ public class ListElement implements Comparable {
 
     public void setValue(double value) {
         this.value = value;
+    }
+
+    /**
+     * Returns the x and y coordinants as a point.
+     * @return
+     */
+    public Point2D getCoordinatesAsPoint() {
+        return new Point2D.Double(x,y);
     }
 
     @Override

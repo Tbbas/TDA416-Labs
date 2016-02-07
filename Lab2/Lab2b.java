@@ -1,4 +1,4 @@
-
+import java.awt.geom.Point2D;
 
 public class Lab2b  {
     /**
@@ -16,6 +16,7 @@ public class Lab2b  {
      * @param poly
      */
     private static  DLList generateLinkedList(double[] poly) {
+
     }
 
 
@@ -24,23 +25,21 @@ public class Lab2b  {
      * the value.
      * @return
      */
-    private static Double calculateValue(Double[] L, Double[] P, Double[] R) {
-        //l-p
-        Double LMP = getLength(L,P);
-        Double PMR = getLength(P,R);
-        Double LMR = getLength(L,R);
-
+    private static Double calculateValue(DLList.Node node) {
+        Double LMP = getLength(((ListElement)node.getPrev().elt).getCoordinatesAsPoint(),((ListElement)node.elt).getCoordinatesAsPoint());
+        Double PMR = getLength(((ListElement)node.elt).getCoordinatesAsPoint(),((ListElement)node.getNext().elt).getCoordinatesAsPoint());
+        Double LMR = getLength(((ListElement)node.getPrev().elt).getCoordinatesAsPoint(),((ListElement)node.getNext().elt).getCoordinatesAsPoint());
         return (LMP+PMR)-LMR;
 
     }
 
     /**
-     * Returns the length between two sets of coordinates.
+     * Returns the length between two points.
      * @param a
      * @param b
      * @return
      */
-    private static double getLength(Double[] a, Double[] b){
-        return Math.sqrt(Math.pow((a[1] - b[1]), 2) + Math.pow((a[0] - b[0]), 2));
+    private static double getLength(Point2D a, Point2D b){
+        return Math.sqrt(Math.pow(a.getY()-b.getY(), 2) + Math.pow(a.getX()-b.getX(), 2));
     }
 }
