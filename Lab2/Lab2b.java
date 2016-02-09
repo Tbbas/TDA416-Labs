@@ -3,7 +3,7 @@ import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class Lab2b  {
-    private static PriorityQueue<ListElement> queue;
+    private static PriorityQueue<ListElement> queue = new PriorityQueue<ListElement>();
     /**
      * The simplyfyshape first calls for a generatelist method wich generates a linkedlist for the x and y coordinates
      * stored in poly, then removes the nodes with the lowest value untill there is only k nodes left.
@@ -12,34 +12,36 @@ public class Lab2b  {
      * @return
      */
   public static double[] simplifyShape(double[] poly, int k) {
+      System.out.println(poly.length/2 - k + " nodes to be removed");
+      System.out.println(poly.length/2 + " nodes");
       DLList list = generateLinkedList(poly);
       int removedNodes = 0;
-      while(removedNodes < poly.length*2 - k) {
+      while(removedNodes < poly.length/2 - k) {
           ListElement elt = queue.peek();
           DLList.Node node = findNodeByValue(list,elt);
-          ((ListElement)node.elt).setValue(calculateValue(node));
+          DLList.Node prev = node.getPrev();
+          DLList.Node next = node.getNext();
           list.remove(node);
           queue.remove(elt);
+          ((ListElement)prev.elt).setValue(calculateValue(node));
+          ((ListElement)next.elt).setValue(calculateValue(node));
           removedNodes++;
       }
+      System.out.println("Removed " + removedNodes + " nodes");
       ArrayList<Double> returnList = new ArrayList<Double>();
       DLList.Node current = list.getFirst();
       while(current != null) {
         returnList.add(((ListElement)current.elt).getX());
-          returnList.add(((ListElement)current.elt).getY());
-
-
-          if(current.getNext() == null) break;
-          current = current.getNext();
+        returnList.add(((ListElement)current.elt).getY());
+        current = current.getNext();
       }
+      System.out.println(returnList.size()/2 + " nodes");
 
       double[] returnArray = new double[returnList.size()];
       for(int i = 0; i<returnList.size();i++) {
         returnArray[i] = returnList.get(i);
       }
       return returnArray;
-
-
   }
 
     /**
@@ -52,6 +54,7 @@ public class Lab2b  {
             if(((ListElement)current.elt).equals(elt)) {
                 return current;
             }
+            current = current.getNext();
         }
         return null;
     }
@@ -79,6 +82,7 @@ public class Lab2b  {
         while(node.next != null){
           if(node != list.getFirst() && node != list.getLast()){
               ((ListElement)node.elt).setValue(calculateValue(node));
+              queue.add((ListElement)node.elt);
           }
           node = node.next;
         }

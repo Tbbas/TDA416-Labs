@@ -2,6 +2,7 @@
 public class Lab2a {
   public static double[] simplifyShape(double[] poly, int k)
   {
+    System.out.println(poly.length/2 + " nodes");
     while(poly.length > k*2){
       int index=2;
       double shortestLength=100;
@@ -20,7 +21,7 @@ public class Lab2a {
       poly = removeElement(poly, index+1);
       poly = removeElement(poly, index);
     }
-    System.out.println(poly.length);
+    System.out.println(poly.length/2 + " nodes");
     return poly;
   }
   public static double[] removeElement(double[] arr, int index){
