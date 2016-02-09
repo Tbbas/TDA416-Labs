@@ -19,6 +19,7 @@ public class Lab2b  {
       int removedNodes = 0;
       while(removedNodes+1 < poly.length/2 - k) {
           removeNode(list);
+          System.out.println("queue nodes: " + queue.size());
           removedNodes++;
       }
       return generateCoordinatesList(list);
@@ -30,10 +31,16 @@ public class Lab2b  {
       DLList.Node prev = node.getPrev();
       DLList.Node next = node.getNext();
       list.remove(node);
-      queue.remove(prev.elt);
-      queue.remove(next.elt);
-      ((ListElement)prev.elt).setValue(calculateValue(node));
-      ((ListElement)next.elt).setValue(calculateValue(node));
+      if(!prev.equals(list.getFirst())){
+        queue.remove(prev.elt);
+        ((ListElement)prev.elt).setValue(calculateValue(prev));
+        queue.add((ListElement)prev.elt);
+      }
+      if(!next.equals(list.getLast())){
+        queue.remove(next.elt);
+        ((ListElement)next.elt).setValue(calculateValue(next));
+        queue.add((ListElement)next.elt);
+      }
     }
 
     /**
@@ -95,7 +102,7 @@ public class Lab2b  {
     private static void calculateWholeListValues(DLList list){
         DLList.Node node = list.getFirst();
         while(node.next != null){
-          if(node != list.getFirst() && node != list.getLast()){
+          if(!node.equals(list.getFirst()) && !node.equals(list.getLast())){
               ((ListElement)node.elt).setValue(calculateValue(node));
               queue.add((ListElement)node.elt);
           }
@@ -113,7 +120,6 @@ public class Lab2b  {
         Double PMR = getLength(((ListElement)node.elt).getCoordinatesAsPoint(),((ListElement)node.getNext().elt).getCoordinatesAsPoint());
         Double LMR = getLength(((ListElement)node.getPrev().elt).getCoordinatesAsPoint(),((ListElement)node.getNext().elt).getCoordinatesAsPoint());
         return (LMP+PMR)-LMR;
-
     }
 
     /**
