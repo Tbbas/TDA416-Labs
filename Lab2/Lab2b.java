@@ -14,17 +14,13 @@ public class Lab2b  {
   public static double[] simplifyShape(double[] poly, int k) {
       System.out.println(poly.length/2 - k + " nodes to be removed");
       System.out.println(poly.length/2 + " nodes");
+      // Generate linked list from given double array
       DLList list = generateLinkedList(poly);
       int removedNodes = 0;
-      while(removedNodes < poly.length/2 - k) {
-          ListElement elt = queue.peek();
-          DLList.Node node = findNodeByValue(list,elt);
-          DLList.Node prev = node.getPrev();
-          DLList.Node next = node.getNext();
-          list.remove(node);
-          queue.remove(elt);
-          ((ListElement)prev.elt).setValue(calculateValue(node));
-          ((ListElement)next.elt).setValue(calculateValue(node));
+      //
+      while(removedNodes+1 < poly.length/2 - k) {
+
+          removeNode(list);
           removedNodes++;
       }
       System.out.println("Removed " + removedNodes + " nodes");
@@ -43,6 +39,18 @@ public class Lab2b  {
       }
       return returnArray;
   }
+    private static void removeNode(DLList list){
+      ListElement elt = queue.poll();
+      System.out.println(elt.getX() + ", " + elt.getY() + " with value: " + elt.getValue());
+      DLList.Node node = findNodeByValue(list,elt);
+      DLList.Node prev = node.getPrev();
+      DLList.Node next = node.getNext();
+      list.remove(node);
+      queue.remove(prev.elt);
+      queue.remove(next.elt);
+      ((ListElement)prev.elt).setValue(calculateValue(node));
+      ((ListElement)next.elt).setValue(calculateValue(node));
+    }
 
     /**
      * Returns the node corresponding to the specified Value
