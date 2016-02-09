@@ -17,31 +17,17 @@ public class Lab2b  {
       DLList list = generateLinkedList(poly);
       int removedNodes = 0;
       while(removedNodes < poly.length/2 - k) {
-          ListElement elt = queue.peek();
+          ListElement elt = queue.poll();
           DLList.Node node = findNodeByValue(list,elt);
           DLList.Node prev = node.getPrev();
           DLList.Node next = node.getNext();
           list.remove(node);
-          queue.remove(elt);
+          queue.remove(prev.elt)
           ((ListElement)prev.elt).setValue(calculateValue(node));
           ((ListElement)next.elt).setValue(calculateValue(node));
           removedNodes++;
       }
-      System.out.println("Removed " + removedNodes + " nodes");
-      ArrayList<Double> returnList = new ArrayList<Double>();
-      DLList.Node current = list.getFirst();
-      while(current != null) {
-        returnList.add(((ListElement)current.elt).getX());
-        returnList.add(((ListElement)current.elt).getY());
-        current = current.getNext();
-      }
-      System.out.println(returnList.size()/2 + " nodes");
-
-      double[] returnArray = new double[returnList.size()];
-      for(int i = 0; i<returnList.size();i++) {
-        returnArray[i] = returnList.get(i);
-      }
-      return returnArray;
+      return generateCoordinatesList(list);
   }
 
     /**
@@ -57,6 +43,29 @@ public class Lab2b  {
             current = current.getNext();
         }
         return null;
+    }
+
+    /**
+     * Returns a array of coordinates from a DLList
+     * @param list
+     * @return
+     */
+    private static double[] generateCoordinatesList(DLList<ListElement> list) {
+        ArrayList<Double> returnList = new ArrayList<Double>();
+        DLList.Node current = list.getFirst();
+        while(current != null) {
+            returnList.add(((ListElement)current.elt).getX());
+            returnList.add(((ListElement)current.elt).getY());
+            current = current.getNext();
+        }
+        System.out.println(returnList.size()/2 + " nodes");
+
+        double[] returnArray = new double[returnList.size()];
+        for(int i = 0; i<returnList.size();i++) {
+            returnArray[i] = returnList.get(i);
+        }
+        return  returnArray;
+
     }
 
     /**
