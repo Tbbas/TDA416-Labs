@@ -42,11 +42,6 @@ public class ListElement implements Comparable {
     @Override
     public int compareTo(Object o) {
         if(o.getClass() != ListElement.class) return 0;
-
-        else {
-            return (int) Math.signum(this.value - ((ListElement)o).getValue());
-        }
-
-
+        return (int) Math.signum(this.value - ((ListElement)o).getValue());
     }
 }

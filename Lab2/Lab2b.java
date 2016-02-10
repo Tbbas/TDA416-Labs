@@ -72,7 +72,6 @@ public class Lab2b  {
             current = current.getNext();
         }
         System.out.println(returnList.size()/2 + " nodes");
-
         double[] returnArray = new double[returnList.size()];
         for(int i = 0; i<returnList.size();i++) {
             returnArray[i] = returnList.get(i);
