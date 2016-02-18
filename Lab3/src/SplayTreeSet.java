@@ -42,14 +42,25 @@ public class SplayTreeSet<E> implements SimpleSet {
         while(node.typeOfNode != Type.ROOT) {
 
             if(node.parent.typeOfNode == Type.ROOT) { //ZIG
-
-            } else if((node.parent.typeOfNode == Type.LEFT
-                    && node.parent.parent.typeOfNode == Type.LEFT) ||
-                    (node.parent.typeOfNode == Type.RIGHT
-                            && node.parent.parent.typeOfNode == Type.RIGHT)){ //Zig-Zig
-
-
-
+                ZIG(node);
+            } else if((node.typeOfNode == Type.LEFT
+                    && node.parent.typeOfNode == Type.LEFT) ||
+                    (node.typeOfNode == Type.RIGHT
+                            && node.parent.typeOfNode == Type.RIGHT)){ //Zig-Zig
+                if((node.typeOfNode == Type.RIGHT
+                        && node.parent.typeOfNode == Type.RIGHT)) {
+                    ZIGZIG(node,1);
+                }
+                else {
+                    ZIGZIG(node,0);
+                }
+            } else { //ZIG-ZAG
+                if((node.typeOfNode == Type.LEFT
+                        && node.parent.typeOfNode == Type.RIGHT)) {
+                    ZIGZAG(node,0);
+                } else {
+                    ZIGZAG(node,0);
+                }
             }
 
 
@@ -92,7 +103,39 @@ public class SplayTreeSet<E> implements SimpleSet {
 
     @Override
     public boolean add(Comparable x) {
-        return false;
+        //Error handling
+        if(x == null) {
+            throw new NullPointerException();
+        }
+        if(root.data != null && x.getClass() != root.data.getClass()) {
+            throw new ClassCastException();
+        }
+        boolean flag = contains(x);
+        Entry currentNode = root;
+        while(flag) {
+            if(x.compareTo(currentNode) < 0) { // left child
+                if(currentNode.leftChild == null) {
+                    Entry newNode = new Entry(x,currentNode,null,null,Type.LEFT);
+                    currentNode.leftChild = newNode;
+                    rebalanceTree(newNode);
+                    break;
+                }else {
+                    currentNode = currentNode.leftChild;
+                }
+            } else if(x.compareTo(currentNode) > 0) { //right child
+                if(currentNode.leftChild == null) {
+                    Entry newNode = new Entry(x,currentNode,null,null,Type.RIGHT);
+                    currentNode.rightChild = newNode;
+                    rebalanceTree(newNode);
+                    break;
+                }else {
+                    currentNode = currentNode.rightChild;
+
+                }
+            }
+
+            }
+        return flag;
     }
 
     @Override
