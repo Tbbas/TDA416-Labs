@@ -17,7 +17,7 @@ public class Lab2b  {
       // Generate linked list from given double array
       DLList list = generateLinkedList(poly);
       int removedNodes = 0;
-      while(removedNodes+1 < poly.length/2 - k) {
+      while(removedNodes < poly.length/2 - k) {
           removeNode(list);
           System.out.println("queue nodes: " + queue.size());
           removedNodes++;
@@ -26,7 +26,6 @@ public class Lab2b  {
   }
     private static void removeNode(DLList list){
       ListElement elt = queue.poll();
-      System.out.println(elt.getX() + ", " + elt.getY() + " with value: " + elt.getValue());
       DLList.Node node = findNodeByValue(list,elt);
       DLList.Node prev = node.getPrev();
       DLList.Node next = node.getNext();
@@ -67,9 +66,9 @@ public class Lab2b  {
         ArrayList<Double> returnList = new ArrayList<Double>();
         DLList.Node current = list.getFirst();
         while(current != null) {
-            returnList.add(((ListElement)current.elt).getX());
-            returnList.add(((ListElement)current.elt).getY());
-            current = current.getNext();
+          returnList.add(((ListElement)current.elt).getX());
+          returnList.add(((ListElement)current.elt).getY());
+          current = current.getNext();
         }
         System.out.println(returnList.size()/2 + " nodes");
         double[] returnArray = new double[returnList.size()];
@@ -86,7 +85,7 @@ public class Lab2b  {
      */
     private static  DLList generateLinkedList(double[] poly) {
       DLList list = new DLList<ListElement>();
-      for(int i = 0; i<poly.length-2; i+=2){
+      for(int i = 0; i<=poly.length-2; i+=2){
         ListElement element = new ListElement(poly[i], poly[i+1], 0.0);
         if(i == 0){
           list.addFirst(element);
