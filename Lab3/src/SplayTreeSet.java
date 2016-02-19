@@ -82,7 +82,17 @@ public class SplayTreeSet<E> implements SimpleSet {
      * @param type 0 if Left-left/1 if Right-Right
      */
     private void ZIGZIG(Entry node,int type) {
-
+        if(type == 0) {
+            rotateRight(node.parent.parent);
+            rotateRight(node.parent);
+            rotateRight(node.parent);
+            rotateRight(node);
+        } else {
+            rotateLeft(node.parent.parent);
+            rotateLeft(node.parent);
+            rotateLeft(node.parent);
+            rotateLeft(node);
+        }
     }
 
     /**
@@ -91,9 +101,37 @@ public class SplayTreeSet<E> implements SimpleSet {
      * @param type 0 if Left-Right/1 if Right-Left
      */
     private void ZIGZAG(Entry node,int type) {
+        if(type == 0) {
+            rotateLeft(node);
+            rotateLeft(node.parent);
+            rotateRight(node);
+            rotateRight(node.parent.parent);
+        } else {
+            rotateRight(node);
+            rotateRight(node.parent);
+            rotateLeft(node);
+            rotateLeft(node.parent.parent);
+
+        }
 
     }
 
+
+    /**
+     * Performs a right rotation on the entry.
+     * @param n
+     */
+    private void rotateRight(Entry n) {
+
+    }
+
+    /**
+     * Performs a left rotation on the entry.
+     * @param n
+     */
+    private void rotateLeft (Entry n) {
+
+    }
 
 
     @Override
