@@ -2,187 +2,196 @@
  * Implementation of a set using a splay tree.
  */
 public class SplayTreeSet<E> implements SimpleSet {
-    private class Entry<E> { // A node which has a right and a left child
-        E data;
+    class Entry { // A node which has a right and a left child
+        Comparable data;
         Entry leftChild;
         Entry rightChild;
-        Entry parent;
-        Type typeOfNode;
 
-        public Entry(E data,Entry parent,Entry leftC, Entry rightC,Type type) {
+        public Entry(Comparable data) {
             this.data = data;
-            this.parent = parent;
-            this.leftChild = leftC;
-            this.rightChild = rightC;
-            typeOfNode = type;
+            leftChild = rightChild = null;
         }
 
 
     }
 
     Entry root;
-
-    /**
-     * An enum to keep track of the type of a node.
-     */
-    private enum Type{
-        RIGHT,LEFT,ROOT
-    }
-
+    Entry header; // for splay
 
     public SplayTreeSet() {
-        root = new Entry(null,null,null,null,Type.ROOT);
+        root = null;
+        header = new Entry(null);
     }
 
     /**
-     * Rebalances the tree untill the specified node is root
-     * @param node
+     * Moves the node with the specified value x to the root.
+     * @param x
      */
-    private void rebalanceTree(Entry node) {
-        while(node.typeOfNode != Type.ROOT) {
-
-            if(node.parent.typeOfNode == Type.ROOT) { //ZIG
-                ZIG(node);
-            } else if((node.typeOfNode == Type.LEFT
-                    && node.parent.typeOfNode == Type.LEFT) ||
-                    (node.typeOfNode == Type.RIGHT
-                            && node.parent.typeOfNode == Type.RIGHT)){ //Zig-Zig
-                if((node.typeOfNode == Type.RIGHT
-                        && node.parent.typeOfNode == Type.RIGHT)) {
-                    ZIGZIG(node,1);
-                }
-                else {
-                    ZIGZIG(node,0);
-                }
-            } else { //ZIG-ZAG
-                if((node.typeOfNode == Type.LEFT
-                        && node.parent.typeOfNode == Type.RIGHT)) {
-                    ZIGZAG(node,0);
-                } else {
-                    ZIGZAG(node,0);
-                }
+    private void moveToRoot(Comparable x) {
+        Entry l,r,t,y;
+        l = r = header;
+        t = root;
+        header.leftChild = header.rightChild = null;
+        for(;;) {
+            if(x.compareTo(t.data) < 0) {
+                if(t.leftChild == null) break;
+                r.leftChild = t;
+                r = t;
+                r = t.leftChild;
+            } else if(x.compareTo(t.data) > 0) {
+                if(t.rightChild == null) break;
+                l.rightChild = t;
+                l = t;
+                t = t.rightChild;
+            } else {
+                break;
             }
-
-
         }
-
+        l.rightChild = t.leftChild;
+        r.leftChild = t.rightChild;
+        t.leftChild = header.rightChild;
+        t.rightChild = header.leftChild;
+        root = t;
     }
 
     /**
-     * Performs a rebalance using the ZIG-pattern
-     * @param node
+     * Splays the tree on the specified tree, making x (if exists in tree) the root.
+     * Otherwise makes the rightmost node becomes the root.
+     * @param x
      */
-    private void ZIG(Entry node) {
-
-    }
-
-    /**
-     * Performs a rebalance using the ZIG-ZIG-pattern
-     * @param node
-     * @param type 0 if Left-left/1 if Right-Right
-     */
-    private void ZIGZIG(Entry node,int type) {
-        if(type == 0) {
-            rotateRight(node.parent.parent);
-            rotateRight(node.parent);
-            rotateRight(node.parent);
-            rotateRight(node);
-        } else {
-            rotateLeft(node.parent.parent);
-            rotateLeft(node.parent);
-            rotateLeft(node.parent);
-            rotateLeft(node);
+    private void splay(Comparable x) {
+        Entry l,r,t,y;
+        l = r =  header;
+        t = root;
+        header.leftChild = header.rightChild = null;
+        for(;;) {
+            if(x.compareTo(t.data) < 0 ) {
+                if(t.leftChild == null) break;
+                if(x.compareTo(t.leftChild.data) < 0) {     //Rotate right
+                    y = t.leftChild;
+                    t.leftChild = y.rightChild;
+                    y.rightChild = t;
+                    t = y;
+                    if(t.leftChild == null) break;
+                }
+                r.leftChild = t;
+                r = t;
+                t = t.leftChild;
+            } else if(x.compareTo(t.data) > 0) {
+                if(t.rightChild == null) break;
+                if(x.compareTo(t.rightChild.data) > 0) {    //Rotate left
+                    y = t.rightChild;
+                    t.rightChild = y.leftChild;
+                    y.leftChild = t;
+                    t = y;
+                    if(t.rightChild == null) break;
+                }
+                l.rightChild = t;
+                l = t;
+                t = t.rightChild;
+            } else {
+                break;
+            }
         }
-    }
-
-    /**
-     * Performs a rebalance using the ZIG-ZAG-pattern
-     * @param node
-     * @param type 0 if Left-Right/1 if Right-Left
-     */
-    private void ZIGZAG(Entry node,int type) {
-        if(type == 0) {
-            rotateLeft(node);
-            rotateLeft(node.parent);
-            rotateRight(node);
-            rotateRight(node.parent.parent);
-        } else {
-            rotateRight(node);
-            rotateRight(node.parent);
-            rotateLeft(node);
-            rotateLeft(node.parent.parent);
-
-        }
-
-    }
-
-
-    /**
-     * Performs a right rotation on the entry.
-     * @param n
-     */
-    private void rotateRight(Entry n) {
-
-    }
-
-    /**
-     * Performs a left rotation on the entry.
-     * @param n
-     */
-    private void rotateLeft (Entry n) {
-
+        l.rightChild = t.leftChild;
+        r.rightChild = t.rightChild;
+        t.leftChild = header.rightChild;
+        t.rightChild = header.leftChild;
+        root = t;
     }
 
 
     @Override
     public int size() {
-        return 0;
+        return count(root);
+    }
+
+
+    /**
+     * Recursive helper method for counting the nodes below e
+     * @param e
+     */
+    private int count(Entry e) {
+        if(e.rightChild == null && e.leftChild == null) {
+            return 1;
+        } else {
+            return 1 + count(e.leftChild) + count(e.rightChild);
+        }
     }
 
     @Override
     public boolean add(Comparable x) {
-        //Error handling
-        if(x == null) {
-            throw new NullPointerException();
+        if(root == null) {
+            root = new Entry(x);
+            return true;
         }
-        if(root.data != null && x.getClass() != root.data.getClass()) {
-            throw new ClassCastException();
-        }
-        boolean flag = contains(x);
-        Entry currentNode = root;
-        while(flag) {
-            if(x.compareTo(currentNode) < 0) { // left child
-                if(currentNode.leftChild == null) {
-                    Entry newNode = new Entry(x,currentNode,null,null,Type.LEFT);
-                    currentNode.leftChild = newNode;
-                    rebalanceTree(newNode);
-                    break;
-                }else {
-                    currentNode = currentNode.leftChild;
-                }
-            } else if(x.compareTo(currentNode) > 0) { //right child
-                if(currentNode.leftChild == null) {
-                    Entry newNode = new Entry(x,currentNode,null,null,Type.RIGHT);
-                    currentNode.rightChild = newNode;
-                    rebalanceTree(newNode);
-                    break;
-                }else {
-                    currentNode = currentNode.rightChild;
+        if(contains(x)) {
+            return false;
+        } else {
+            Entry current = root;
+            while(true) {
+                int c = x.compareTo(current.data);
+                if(c < 0) {
+                    if(current.leftChild == null) {
+                        current.leftChild = new Entry(x);
+                        break;
+                    }
+                    else current = current.leftChild;
 
+                } else {
+                    if(current.rightChild == null) {
+                        current.rightChild = new Entry(x);
+                        break;
+                    }
+                    else current = current.rightChild;
                 }
             }
+            splay(x);
+        }
+        return true;
 
-            }
-        return flag;
+
     }
 
     @Override
     public boolean remove(Comparable x) {
-        return false;
+        Entry e;
+        splay(x);
+        if(root.data.compareTo(x) != 0) return false;
+
+        if(root.leftChild == null) {
+            root = root.rightChild;
+        } else {
+            e = root.rightChild;
+            root = root.leftChild;
+            splay(x);
+            root.rightChild = e;
+        }
+        return true;
     }
 
     @Override
     public boolean contains(Comparable x) {
-        return false;
+        //Error handling
+        if (x == null) {
+            throw new NullPointerException();
+        }
+        if (root.data != null && x.getClass() != root.data.getClass()) {
+            throw new ClassCastException();
+        }
+        if(root == null) {
+            return false;
+        }
+        if (root.leftChild == null && root.rightChild == null) {
+            return false;
+        }
+
+        splay(x);
+        if (x.compareTo(root.data) != 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
+
 }

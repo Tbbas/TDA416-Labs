@@ -25,7 +25,13 @@ public class SortedLinkedListSet<E> implements SimpleSet {
 
     @Override
     public int size() {
-        return 0;
+       int count = 0;
+        Entry current = head;
+        while(current != null) {
+            count++;
+            current = current.next;
+        }
+        return count;
     }
 
     @Override
