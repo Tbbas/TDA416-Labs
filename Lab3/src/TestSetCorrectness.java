@@ -28,36 +28,40 @@ public class TestSetCorrectness{
       countNums = Integer.parseInt(args[3]);
     }
     Random rand = new Random();
-    if(testLLSet){
-      set = new LinkedHashSet(new ArrayList<Integer>());
-      ownSet = new SortedLinkedListSet<Integer>();
-    } else if(testSTS){
-      set = new TreeSet(new ArrayList<Integer>());
-      ownSet = new SplayTreeSet<Integer>();
-    }
     for(int i=0;i<numTries;i++){
+        if(testLLSet){
+            set = new LinkedHashSet<Integer>();
+            ownSet = new SortedLinkedListSet<Integer>();
+        } else if(testSTS){
+            set = new TreeSet<Integer>();
+            ownSet = new SplayTreeSet<Integer>();
+        }
       for(int j = 0;j<countRandOps;j++){
         int num = 0;
-          int java;
-          int own;
+        int java;
+        int own;
         int oper = rand.nextInt(4) + 1;
         if(oper > 1){
           num = rand.nextInt(countNums);
         }
+        //System.out.println("OPER: " + translate[oper-1] + ", num: " + num);
         if(oper == 1){
           java = set.size();
           own = ownSet.size();
         }else if(oper == 2){
           java = set.add(num) ? 1 : 0;
-          own = ownSet.add(num) ? 1 : 0;
+          own = ownSet.add(new Integer(num)) ? 1 : 0;
         }else if(oper == 3){
           java = set.remove(num) ? 1 : 0;
-          own = ownSet.remove(num) ? 1 : 0;
+          own = ownSet.remove(new Integer(num)) ? 1 : 0;
         }else{
           java = set.contains(num) ? 1 : 0;
-          own = ownSet.contains(num) ? 1 : 0;
+          own = ownSet.contains(new Integer(num)) ? 1 : 0;
         }
         if(java != own){
+          for(SortedLinkedListSet.Entry lol = ((SortedLinkedListSet)ownSet).head; lol != null; lol = lol.next){
+            System.out.println("node : " + lol.data);
+          }
           String ret = "ERR java was: " + java + ", own was: " + own + ", oper was: " + translate[oper-1];
             if(oper>1){
                 ret += ", num: " + num;
@@ -69,6 +73,7 @@ public class TestSetCorrectness{
             if(oper>1){
                 ret += ", num: " + num;
             }
+           //System.out.println(ret);
         }
       }
     }
