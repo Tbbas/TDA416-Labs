@@ -57,44 +57,44 @@ public class SplayTreeSet<E> implements SimpleSet {
     /**
      * Splays the tree on the specified tree, making x (if exists in tree) the root.
      * Otherwise makes the rightmost node becomes the root.
-     * @param x
+     * @param key
      */
-    private void splay(Comparable x) {
-        Entry l,r,t,y;
-        l = r =  header;
+    private void splay(Comparable key) {
+        Entry l, r, t, y;
+        l = r = header;
         t = root;
         header.leftChild = header.rightChild = null;
-        for(;;) {
-            if(x.compareTo(t.data) < 0 ) {
-                if(t.leftChild == null) break;
-                if(x.compareTo(t.leftChild.data) < 0) {     //Rotate right
-                    y = t.leftChild;
+        for (;;) {
+            if (key.compareTo(t.data) < 0) {
+                if (t.leftChild == null) break;
+                if (key.compareTo(t.leftChild.data) < 0) {
+                    y = t.leftChild;                            /* rotate rightChild */
                     t.leftChild = y.rightChild;
                     y.rightChild = t;
                     t = y;
-                    if(t.leftChild == null) break;
+                    if (t.leftChild == null) break;
                 }
-                r.leftChild = t;
+                r.leftChild = t;                                 /* link rightChild */
                 r = t;
                 t = t.leftChild;
-            } else if(x.compareTo(t.data) > 0) {
-                if(t.rightChild == null) break;
-                if(x.compareTo(t.rightChild.data) > 0) {    //Rotate left
-                    y = t.rightChild;
+            } else if (key.compareTo(t.data) > 0) {
+                if (t.rightChild == null) break;
+                if (key.compareTo(t.rightChild.data) > 0) {
+                    y = t.rightChild;                            /* rotate leftChild */
                     t.rightChild = y.leftChild;
                     y.leftChild = t;
                     t = y;
-                    if(t.rightChild == null) break;
+                    if (t.rightChild == null) break;
                 }
-                l.rightChild = t;
+                l.rightChild = t;                                /* link leftChild */
                 l = t;
                 t = t.rightChild;
             } else {
                 break;
             }
         }
-        l.rightChild = t.leftChild;
-        r.rightChild = t.rightChild;
+        l.rightChild = t.leftChild;                                   /* assemble */
+        r.leftChild = t.rightChild;
         t.leftChild = header.rightChild;
         t.rightChild = header.leftChild;
         root = t;
@@ -103,6 +103,9 @@ public class SplayTreeSet<E> implements SimpleSet {
 
     @Override
     public int size() {
+        if(root == null){
+            return 0;
+        }
         return count(root);
     }
 
@@ -112,8 +115,14 @@ public class SplayTreeSet<E> implements SimpleSet {
      * @param e
      */
     private int count(Entry e) {
-        if(e.rightChild == null && e.leftChild == null) {
+        if(e == null){
+            return 0;
+        }else if(e.rightChild == null && e.leftChild == null){
             return 1;
+        }else if(e.rightChild != null && e.leftChild == null) {
+            return 1 + count(e.rightChild);
+        } else if(e.rightChild == null && e.leftChild != null){
+            return 1 + count(e.leftChild);
         } else {
             return 1 + count(e.leftChild) + count(e.rightChild);
         }
@@ -125,7 +134,7 @@ public class SplayTreeSet<E> implements SimpleSet {
             root = new Entry(x);
             return true;
         }
-        if(contains(x)) {
+        if(this.contains(x)) {
             return false;
         } else {
             Entry current = root;
@@ -155,6 +164,9 @@ public class SplayTreeSet<E> implements SimpleSet {
 
     @Override
     public boolean remove(Comparable x) {
+        if(root == null){
+            return false;
+        }
         Entry e;
         splay(x);
         if(root.data.compareTo(x) != 0) return false;
@@ -176,11 +188,11 @@ public class SplayTreeSet<E> implements SimpleSet {
         if (x == null) {
             throw new NullPointerException();
         }
-        if (root.data != null && x.getClass() != root.data.getClass()) {
-            throw new ClassCastException();
-        }
         if(root == null) {
             return false;
+        }
+        if(x.compareTo(root.data) == 0){
+            return true;
         }
         if (root.leftChild == null && root.rightChild == null) {
             return false;

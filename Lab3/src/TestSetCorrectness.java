@@ -1,56 +1,79 @@
+import java.util.*;
+
 /**
  *
  */
 public class TestSetCorrectness{
-  private boolean testLLSet;
-  private boolean testSTS;
-  private int numTries;
-  private int countRandOps;
-  private int countNums;
-  public static void main(String[] args) {
+  private static boolean testLLSet;
+  private static boolean testSTS;
+  private static int numTries;
+  private static int countRandOps;
+  private static int countNums;
+    final private static String[] translate = {"size", "add", "remove", "contans"};
+    private static Set set;
+
+    private static SimpleSet ownSet;
+  public static void main(String[] args) throws Exception {
     if(args.length >= 0){
-      testLLSet = args[0] == 1;
-      testSTS = args[0] == 2;
+      testLLSet = Integer.parseInt(args[0]) == 1;
+      testSTS = Integer.parseInt(args[0]) == 2;
     }
     if(args.length >= 1){
-      numTries = args[1];
+      numTries = Integer.parseInt(args[1]);
     }
     if(args.length >= 2){
-      countRandOps = args[2];
+      countRandOps = Integer.parseInt(args[2]);
     }
     if(args.length >= 3){
-      countNums = args[3];
+      countNums = Integer.parseInt(args[3]);
     }
     Random rand = new Random();
-    if(testLLSet){
-      LinkedHashSet set = new LinkedHashSet(new ArrayList<Integer>());
-      SortedLinkedListSet<Integer> ownSet = new SortedLinkedListSet<Integer>();
-    } else if(testSTS){
-      TreeSet set = new TreeSet(new ArrayList<Integer>());
-      SplayTreeSet<Integer> ownSet = new SplayTreeSet<Integer>();
-    }
     for(int i=0;i<numTries;i++){
+        if(testLLSet){
+            set = new LinkedHashSet<Integer>();
+            ownSet = new SortedLinkedListSet<Integer>();
+        } else if(testSTS){
+            set = new TreeSet<Integer>();
+            ownSet = new SplayTreeSet<Integer>();
+        }
       for(int j = 0;j<countRandOps;j++){
+        int num = 0;
+        int java;
+        int own;
         int oper = rand.nextInt(4) + 1;
         if(oper > 1){
-          int num = rand.nextInt(countNums);
+          num = rand.nextInt(countNums);
         }
+        //System.out.println("OPER: " + translate[oper-1] + ", num: " + num);
         if(oper == 1){
-          int java = set.size();
-          int own = ownSet.size();
+          java = set.size();
+          own = ownSet.size();
         }else if(oper == 2){
-          boolean java = set.add(num);
-          boolean own = ownSet.add(num);
+          java = set.add(num) ? 1 : 0;
+          own = ownSet.add(new Integer(num)) ? 1 : 0;
         }else if(oper == 3){
-          boolean java = set.remove(num);
-          boolean own = ownSet.remove(num);
+          java = set.remove(num) ? 1 : 0;
+          own = ownSet.remove(new Integer(num)) ? 1 : 0;
         }else{
-          boolean java = set.contains(num);
-          boolean own = ownSet.contains(num);
+          java = set.contains(num) ? 1 : 0;
+          own = ownSet.contains(new Integer(num)) ? 1 : 0;
         }
         if(java != own){
-          System.out.println("java was: " + java + ", own was: " + own + ", oper was: " + oper);
+          for(SortedLinkedListSet.Entry lol = ((SortedLinkedListSet)ownSet).head; lol != null; lol = lol.next){
+            System.out.println("node : " + lol.data);
+          }
+          String ret = "ERR java was: " + java + ", own was: " + own + ", oper was: " + translate[oper-1];
+            if(oper>1){
+                ret += ", num: " + num;
+            }
+            System.out.println(ret);
           throw new Exception();
+        }else{
+            String ret = "OK java was: " + java + ", own was: " + own + ", oper was: " + translate[oper-1];
+            if(oper>1){
+                ret += ", num: " + num;
+            }
+           //System.out.println(ret);
         }
       }
     }
