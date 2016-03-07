@@ -7,7 +7,7 @@ public class DirectedGraph<E extends Edge> {
 	/**
 	 * A class for comparing two edges
 	 */
-	private class CompKruskasEdge implements Comparator<E> {
+	public class CompKruskasEdge implements Comparator<E> {
 
 		@Override
 		public int compare(E t, E t1) {
@@ -143,8 +143,21 @@ public class DirectedGraph<E extends Edge> {
 
 	}
 
-		
+	/**
+	 * Returns minimal spanning tree
+	 * @return Iterator of mst
+	 */
 	public Iterator<E> minimumSpanningTree() {
+		Set<E> set = new HashSet<E>();
+		//Gets all edges from pritority queue
+		for(E e = pq.poll(); !pg.isEmpty(); e = pq.poll()){
+			set.add(e);
+			//Checkf if there is a cycle after adding e, in that case remove it.
+			if(checkForCycle(e, e.getSource(), e.getDest())){
+				set.remove(e);
+			}
+		}
+		return set.iterator();
 	}
 
 
@@ -161,4 +174,3 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 }
-  

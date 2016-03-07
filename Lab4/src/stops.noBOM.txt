@@ -112,7 +112,7 @@ Sälöfjordsgatan	40	70
 Teleskopgatan	285	20
 Temperaturgatan	0	10
 Tingvallsvägen	290	170
-Torp	280	280
+Torp	260	280
 Töpelsgatan	280	300
 UlleviNorra	215	190
 UlleviSödra	210	220
