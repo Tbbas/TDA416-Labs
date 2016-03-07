@@ -142,22 +142,60 @@ public class DirectedGraph<E extends Edge> {
 		return conset.contains(from) && conset.contains(to);
 
 	}
-
+	private int nbrofedges = 0;
 	/**
 	 * Returns minimal spanning tree
 	 * @return Iterator of mst
 	 */
 	public Iterator<E> minimumSpanningTree() {
-		Set<E> set = new HashSet<E>();
+		Map<Integer, Set<E>> map = new HashMap<>();
+		for(int i = 0 ; i < adjacantNodes.size(); i++){
+			map.put(i, new HashSet<E>());
+		}
 		//Gets all edges from pritority queue
-		for(E e = pq.poll(); !pq.isEmpty(); e = pq.poll()){
-			set.add(e);
-			//Checkf if there is a cycle after adding e, in that case remove it.
-			if(checkForCycle(set, e.getSource(), e.getDest())){
-				set.remove(e);
+		for(E e = pq.poll(); !pq.isEmpty() && nbrofedges < adjacantNodes.size(); e = pq.poll()){
+			int from = e.getSource();
+			int to = e.getDest();
+			double weight = e.getWeight();
+
+			if(map.get(from) != map.get(to)){
+				Set<E> newSet = null;
+				Set<E> nodes = null;
+				if(map.get(from).size() >= map.get(to).size()){
+					newSet =  merge(map.get(from), map.get(to), e);
+					nodes = map.get(e.to);
+				}else{
+					newSet =  merge(map.get(to), map.get(from), e);
+					nodes = map.get(e.from);
+				}
+				map.put(from, newSet);
+				map.put(to, newSet);
+
+				Iterator<E> iter = nodes.iterator();
+				while(iter.hasNext()){
+					E node = iter.next();
+					map.put(node.to, newSet);
+					map.put(node.from, newSet);
+				}
 			}
 		}
-		return set.iterator();
+		return map.get(0).iterator();
+	}
+	private Set<E> merge(Set<E> from, Set<E> to, E e){
+		// if there is not a cycle, merge and add the new node.
+		// Else the nodes already are in the same list.
+		if(!checkForCycle(from, e.from, e.to)) {
+			Iterator<E> iter = to.iterator();
+
+			while (iter.hasNext()) {
+				from.add(iter.next());
+			}
+
+			from.add(e);
+			nbrofedges++;
+		}
+
+		return from;
 	}
 
 
