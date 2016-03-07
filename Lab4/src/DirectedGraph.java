@@ -86,15 +86,12 @@ public class DirectedGraph<E extends Edge> {
 
 				while(iter.hasNext()) {
 					E e = iter.next();
-					if(!visited[e.to]) {
-						CompDijkstraPath dc2 = new CompDijkstraPath(e.to,dc.path);
+					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, new HashSet<E>(dc.path));
 						dc2.addEdge(e);
 						pq.add(dc2);
 					}
 				}
 			}
-
-		}
 		}
 			return null;
 	}
@@ -215,7 +212,6 @@ public class DirectedGraph<E extends Edge> {
 			this.node = node;
 			this.path = set;
 			calcWeight();
-
 		}
 
 		private void addEdge(E e) {
