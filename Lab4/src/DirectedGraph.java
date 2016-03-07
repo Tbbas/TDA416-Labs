@@ -7,7 +7,7 @@ public class DirectedGraph<E extends Edge> {
 	/**
 	 * A class for comparing two edges
 	 */
-	public class CompKruskasEdge implements Comparator<E> {
+	private class CompKruskalEdge implements Comparator<E> {
 
 		@Override
 		public int compare(E t, E t1) {
@@ -30,7 +30,7 @@ public class DirectedGraph<E extends Edge> {
 	 * @param noOfNodes
      */
 	public DirectedGraph(int noOfNodes) {
-		pq = new PriorityQueue(noOfNodes,new CompKruskasEdge());
+		pq = new PriorityQueue(noOfNodes,new CompKruskalEdge());
 		adjacantNodes = new HashMap<>();
 
 		for(int i =0; i<noOfNodes;i++) {
@@ -60,8 +60,8 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 	public Iterator<E> shortestPath(int from, int to) {
-		PriorityQueue<DijkstrasCompPath> pq = new PriorityQueue<>();
-		pq.add(new DijkstrasCompPath(from));
+		PriorityQueue<CompDijkstraPath> pq = new PriorityQueue<>();
+		pq.add(new CompDijkstraPath(from));
 
 		boolean[] visited = new boolean[adjacantNodes.size()]; //To keep track of visited
 
@@ -74,20 +74,20 @@ public class DirectedGraph<E extends Edge> {
 
 		while(!pq.isEmpty()) {
 
-		DijkstrasCompPath dc = pq.poll();
+		CompDijkstraPath dc = pq.poll();
 
 		if(!visited[dc.node]){
 			if(dc.node == to) {
-				return d.path.iterator();
+				return dc.path.iterator();
 			} else {
-				visited[d.node] = true;
+				visited[dc.node] = true;
 
 				Iterator<E> iter = adjacantNodes.get(dc.node).iterator();
 
 				while(iter.hasNext()) {
 					E e = iter.next();
 					if(!visited[e.to]) {
-						DijkstrasCompPath dc2 = new DijkstrasCompPath(e.to,dc.path);
+						CompDijkstraPath dc2 = new CompDijkstraPath(e.to,dc.path);
 						dc2.addEdge(e);
 						pq.add(dc2);
 					}
@@ -161,14 +161,55 @@ public class DirectedGraph<E extends Edge> {
 	}
 
 
-	private class DijkstrasCompPath implements Comparable {
+	private class CompDijkstraPath implements Comparable {
 
-		public DijkstrasCompPath(int node) {
+		private int node;
+		private Set<E> path;
+		private double weight;
 
+		private CompDijkstraPath(int node) {
+			this.node = node;
+			this.path = new HashSet<>();
+			this.weight = 0;
+		}
+
+		private CompDijkstraPath(int node, Set<E> set) {
+			this.node = node;
+			this.path = set;
+			calcWeight();
+
+		}
+
+		private void addEdge(E e) {
+			path.add(e);
+			weight += e.getWeight();
+		}
+
+		private void addPath(Set<E> path) {
+			this.path.addAll(path);
+			calcWeight();
+		}
+
+
+		private void calcWeight() {
+			Iterator<E> iter = path.iterator();
+			double sum = 0;
+
+			while(iter.hasNext()) {
+				sum += iter.next().getWeight();
+			}
+
+			weight = sum;
 		}
 
 		@Override
 		public int compareTo(Object o) {
+			CompDijkstraPath o1 = (CompDijkstraPath)o;
+
+			if(this.weight > o1.weight) return 1;
+			if(this.weight < o1.weight) return -1;
+
+
 			return 0;
 		}
 	}
