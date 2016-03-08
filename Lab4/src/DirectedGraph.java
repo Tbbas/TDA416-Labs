@@ -58,7 +58,12 @@ public class DirectedGraph<E extends Edge> {
 
 		pq.add(e);
 	}
-
+	/**
+	 * Returns the shortest path from the two given nodes using djikstrats algorithm
+	 * @param from 	origin point
+	 * @param to 		target point
+	 * returns iterator of edges in path
+	 */
 	public Iterator<E> shortestPath(int from, int to) {
 		PriorityQueue<CompDijkstraPath> pq = new PriorityQueue<>();
 		pq.add(new CompDijkstraPath(from));
@@ -101,8 +106,8 @@ public class DirectedGraph<E extends Edge> {
 	 * iterates over all nodes that have connection to "from" untill the specified edge is found.
 	 * @param from
 	 * @param to
-     * @return
-     */
+   * @return
+   */
 		private E getEdge(int from, int to) {
 		Set<E> set = adjacantNodes.get(from);
 
@@ -141,7 +146,7 @@ public class DirectedGraph<E extends Edge> {
 	}
 	private int nbrofedges = 0;
 	/**
-	 * Returns minimal spanning tree
+	 * Returns minimal spanning tree, calculated using kruskals algorithm
 	 * @return Iterator of mst
 	 */
 	public Iterator<E> minimumSpanningTree() {
