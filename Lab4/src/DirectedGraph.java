@@ -38,14 +38,6 @@ public class DirectedGraph<E extends Edge> {
 		}
 	}
 
-
-	/**
-	 * Sets the location.
-	 */
-	public void setLocation() {
-
-	}
-
 	/**
 	 * Adds an edge t adjacantNodes
 	 * @param e
@@ -83,6 +75,7 @@ public class DirectedGraph<E extends Edge> {
 
 		if(!visited[dc.node]){
 			if(dc.node == to) {
+				//add all the edges to pq
 				return dc.path.iterator();
 			} else {
 				visited[dc.node] = true;
@@ -91,7 +84,7 @@ public class DirectedGraph<E extends Edge> {
 
 				while(iter.hasNext()) {
 					E e = iter.next();
-					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, new HashSet<E>(dc.path));
+					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, dc.path);
 						dc2.addEdge(e);
 						pq.add(dc2);
 					}
@@ -150,6 +143,7 @@ public class DirectedGraph<E extends Edge> {
 	 * @return Iterator of mst
 	 */
 	public Iterator<E> minimumSpanningTree() {
+		PriorityQueue<E> copyOfPq = new PriorityQueue<>();
 		Map<Integer, Set<E>> map = new HashMap<>();
 		for(int i = 0 ; i < adjacantNodes.size(); i++){
 			map.put(i, new HashSet<E>());
@@ -159,6 +153,7 @@ public class DirectedGraph<E extends Edge> {
 			int from = e.getSource();
 			int to = e.getDest();
 			double weight = e.getWeight();
+			copyOfPq.add(e);
 
 			if(map.get(from) != map.get(to)){
 				Set<E> newSet = null;
@@ -181,12 +176,13 @@ public class DirectedGraph<E extends Edge> {
 				}
 			}
 		}
+		this.pq = copyOfPq; // So that no edges are "lost"
 		return map.get(0).iterator();
 	}
 	private Set<E> merge(Set<E> from, Set<E> to, E e){
 		// if there is not a cycle, merge and add the new node.
 		// Else the nodes already are in the same list.
-		if(!checkForCycle(from, e.from, e.to)) {
+		if(from != to) {
 			Iterator<E> iter = to.iterator();
 
 			while (iter.hasNext()) {
@@ -226,7 +222,9 @@ public class DirectedGraph<E extends Edge> {
 
 		private void addPath(Set<E> path) {
 			this.path.addAll(path);
-			calcWeight();
+			for(E e:path) {
+				weight += e.getWeight();
+			}
 		}
 
 
