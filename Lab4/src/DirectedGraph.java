@@ -84,7 +84,7 @@ public class DirectedGraph<E extends Edge> {
 
 				while(iter.hasNext()) {
 					E e = iter.next();
-					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, dc.path);
+					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, new HashSet<>(dc.path));
 						dc2.addEdge(e);
 						pq.add(dc2);
 					}
@@ -143,7 +143,7 @@ public class DirectedGraph<E extends Edge> {
 	 * @return Iterator of mst
 	 */
 	public Iterator<E> minimumSpanningTree() {
-		PriorityQueue<E> copyOfPq = new PriorityQueue<>();
+		PriorityQueue<E> copyOfPq = new PriorityQueue(adjacantNodes.size(),new CompKruskalEdge());
 		Map<Integer, Set<E>> map = new HashMap<>();
 		for(int i = 0 ; i < adjacantNodes.size(); i++){
 			map.put(i, new HashSet<E>());
@@ -176,7 +176,9 @@ public class DirectedGraph<E extends Edge> {
 				}
 			}
 		}
-		this.pq = copyOfPq; // So that no edges are "lost"
+		for(E e: copyOfPq) {
+			pq.add(e);
+		}//so that no edges are lost
 		return map.get(0).iterator();
 	}
 	private Set<E> merge(Set<E> from, Set<E> to, E e){
