@@ -71,27 +71,27 @@ public class DirectedGraph<E extends Edge> {
 
 		while(!pq.isEmpty()) {
 
-		CompDijkstraPath dc = pq.poll();
+			CompDijkstraPath dc = pq.poll();
 
-		if(!visited[dc.node]){
-			if(dc.node == to) {
-				//add all the edges to pq
-				return dc.path.iterator();
-			} else {
-				visited[dc.node] = true;
+			if(!visited[dc.node]){
+				if(dc.node == to) {
+					//add all the edges to pq
+					return dc.path.iterator();
+				} else {
+					visited[dc.node] = true;
 
-				Iterator<E> iter = adjacantNodes.get(dc.node).iterator();
+					Iterator<E> iter = adjacantNodes.get(dc.node).iterator();
 
-				while(iter.hasNext()) {
-					E e = iter.next();
-					CompDijkstraPath dc2 = new CompDijkstraPath(e.to, new HashSet<>(dc.path));
+					while(iter.hasNext()) {
+						E e = iter.next();
+						CompDijkstraPath dc2 = new CompDijkstraPath(e.to, dc.path);
 						dc2.addEdge(e);
 						pq.add(dc2);
 					}
 				}
 			}
 		}
-			return null;
+		return null;
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class DirectedGraph<E extends Edge> {
 
 		private CompDijkstraPath(int node, Set<E> set) {
 			this.node = node;
-			this.path = set;
+			this.path = new LinkedHashSet<E>(set);
 			calcWeight();
 		}
 
