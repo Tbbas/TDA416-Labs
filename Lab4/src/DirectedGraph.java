@@ -57,8 +57,8 @@ public class DirectedGraph<E extends Edge> {
 	 * returns iterator of edges in path
 	 */
 	public Iterator<E> shortestPath(int from, int to) {
-		PriorityQueue<CompDijkstraPath> pq = new PriorityQueue<>();
-		pq.add(new CompDijkstraPath(from));
+		PriorityQueue<CompDijkstraPath> prio = new PriorityQueue<>();
+		prio.add(new CompDijkstraPath(from));
 
 		boolean[] visited = new boolean[adjacantNodes.size()]; //To keep track of visited
 
@@ -69,13 +69,13 @@ public class DirectedGraph<E extends Edge> {
 
 
 
-		while(!pq.isEmpty()) {
+		while(!prio.isEmpty()) {
 
-			CompDijkstraPath dc = pq.poll();
+			CompDijkstraPath dc = prio.poll();
 
 			if(!visited[dc.node]){
 				if(dc.node == to) {
-					//add all the edges to pq
+					//add all the edges to prio
 					return dc.path.iterator();
 				} else {
 					visited[dc.node] = true;
@@ -86,7 +86,7 @@ public class DirectedGraph<E extends Edge> {
 						E e = iter.next();
 						CompDijkstraPath dc2 = new CompDijkstraPath(e.to, dc.path);
 						dc2.addEdge(e);
-						pq.add(dc2);
+						prio.add(dc2);
 					}
 				}
 			}
@@ -143,17 +143,17 @@ public class DirectedGraph<E extends Edge> {
 	 * @return Iterator of mst
 	 */
 	public Iterator<E> minimumSpanningTree() {
-		PriorityQueue<E> copyOfPq = new PriorityQueue(adjacantNodes.size(),new CompKruskalEdge());
+		nbrofedges = 0;
+		PriorityQueue<E> copyOfPq = new PriorityQueue(pq);
 		Map<Integer, Set<E>> map = new HashMap<>();
 		for(int i = 0 ; i < adjacantNodes.size(); i++){
 			map.put(i, new HashSet<E>());
 		}
 		//Gets all edges from pritority queue
-		for(E e = pq.poll(); !pq.isEmpty() && nbrofedges < adjacantNodes.size(); e = pq.poll()){
+		for(E e = copyOfPq.poll(); !copyOfPq.isEmpty() && nbrofedges < adjacantNodes.size(); e = copyOfPq.poll()){
 			int from = e.getSource();
 			int to = e.getDest();
 			double weight = e.getWeight();
-			copyOfPq.add(e);
 
 			if(map.get(from) != map.get(to)){
 				Set<E> newSet = null;
@@ -176,9 +176,6 @@ public class DirectedGraph<E extends Edge> {
 				}
 			}
 		}
-		for(E e: copyOfPq) {
-			pq.add(e);
-		}//so that no edges are lost
 		return map.get(0).iterator();
 	}
 	private Set<E> merge(Set<E> from, Set<E> to, E e){
